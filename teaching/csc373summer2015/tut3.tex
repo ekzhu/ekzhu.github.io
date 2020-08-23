@@ -1,0 +1,442 @@
+%% LyX 2.1.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[landscape,english]{slides}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\setcounter{secnumdepth}{1}
+\setcounter{tocdepth}{1}
+\usepackage{amsmath}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\pdfpageheight\paperheight
+\pdfpagewidth\paperwidth
+
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newenvironment{lyxlist}[1]
+{\begin{list}{}
+{\settowidth{\labelwidth}{#1}
+ \setlength{\leftmargin}{\labelwidth}
+ \addtolength{\leftmargin}{\labelsep}
+ \renewcommand{\makelabel}[1]{##1\hfil}}}
+{\end{list}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{algorithm,algpseudocode}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+Title
+
+\textbf{CSC373 Tutorial 3, Summer 2015}
+
+TA: Eric Zhu
+
+Problems are based on tutorial exercises from previous offering of
+the course by Francois Pitt (Fall 2014).
+
+Intro
+
+Brief review of dynamic programming:
+\begin{itemize}
+\item Recursive structure of sub-problems
+\item Data structure for storing optimal values for sub-problems (why)
+\item Iterations to compute optimal values of sub-problems
+\item Reconstruction of optimal solution (s)
+\end{itemize}
+Make change 1
+
+\textbf{Making Change}
+
+Consider the problem of making change when the denominations are arbitrary.
+\begin{lyxlist}{00.00.0000}
+\item [{Input:}] Positive integer \textquotedbl{}amount\textquotedbl{}
+$n$, positive integer \textquotedbl{}denominations\textquotedbl{}
+$d=[d_{1},d_{2},...,d_{m}]$ and $d_{1}<d_{2}<...<d_{m}$. 
+\item [{Output:}] \textbf{All possible ways} to make change: lists of \textquotedbl{}coins\textquotedbl{}
+$c=[c_{1},c_{2},...,c_{k}]$ where each $c_{i}$ is in $d$, repeated
+coins are allowed ($c_{i}=c_{j}$ for $i\ne j$), $\sum_{i=1}^{k}c_{i}=n$.
+If no solution is possible, $k=0$ and the list is empty.
+\end{lyxlist}
+Make change 2
+
+\textbf{Recursive Structure}
+
+Finding a recursive structure of sub-problems - we need to divide
+a problem into smaller problems, and obtain the optimal solution based
+on the optimal solutions of the smaller problems.
+
+make change 3
+
+\textbf{Problem: }find solution giving amount $n$ and denominations
+$d=[d_{1},d_{2},...,d_{m}]$: $S(n,[d_{1},...,d_{m}])$
+
+\textbf{Sub-problems: }
+\begin{enumerate}
+\item Find solutions giving amount $n$ and denominations $d_{1},d_{2},...,d_{m-1}$,
+i.e. solve the original problem without using $d_{m}$: $S(n,[d,...,d_{m-1}])$
+\item Find solutons giving amount $n-d_{m}$and denominations $d_{1},d_{2},...,d_{m}$,
+i.e. use $d_{m}$ once, and solve a smaller problem with the same
+denominations: $S(n-d_{m},[d_{1},...,d_{m}])$
+\end{enumerate}
+make change 4
+
+\textbf{Solution: }take union of the solutions for sub-problems 1
+and 2:
+
+$S(n,[d_{1},...,d_{m}])=S(n,[d,...,d_{m-1}])\cup(S(n-d_{m},[d_{1},...,d_{m}])+[d_{m}])$
+if $n-d_{m}\ge0$, and
+
+$S(n,[d_{1},...,d_{m}])=S(n,[d,...,d_{m-1}])$ if $n-d_{m}<0$, as
+there is no solution to make negative change with positive coins.
+
+For example: 
+
+\begin{align*}
+S(5,[1,2,5]) & =S(5,[1,2])\cup(S(0,[1,2,5])+[5])\\
+ & =S(5,[1])\cup(S(3,[1,2]))\cup\{[]+[5]\}\\
+ & ...\\
+ & =\{[1,1,1,1,1]\}\cup\{[1,1,1,2],[1,2,2]\}\cup\{[5]\}
+\end{align*}
+
+
+2-d array:
+
+We need a data structure to store the number of solutions to the sub-problems.
+Remember edit distance? 
+
+We can use a table (2-D array) of size $(n+1)\times m$, because there
+are 2 input variables ($n$ and $d$) and all their values are discrete,
+and we need an additional row to store the sub-probelms involve zero
+amounts ($n=0$).
+
+What is the recurrence relation for the values in the table?
+
+2-d array: example 1
+
+Example: $n=5$ and $d=\{1,2,5\}$
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Amount & 1 & 2 & 5\tabularnewline
+\hline 
+\hline 
+0 & 1 &  & \tabularnewline
+\hline 
+1 &  &  & \tabularnewline
+\hline 
+2 &  &  & \tabularnewline
+\hline 
+3 &  &  & \tabularnewline
+\hline 
+4 &  &  & \tabularnewline
+\hline 
+5 &  &  & \tabularnewline
+\hline 
+\end{tabular}
+
+Row $i$ represents amount $i$, and column $j$ represents using
+the denominations up to $d_{j}$. Each cell in the table stores the
+number of solutions to the sub-problem $S(i,[d_{1},...,d_{j}])$.
+For example, cell at row 0, column 1, represented as $(0,1)$, stores
+the number of solutions to the sub-problem $S(0,[1])$, and the number
+of solutions is 1 - just use 0 coins to make \$0 change. Cell $(1,2)$
+is $S(1,[1,2])$, and so on.
+
+2-d array: example 2
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Amount & 1 & 2 & 5\tabularnewline
+\hline 
+\hline 
+0 & 1 &  & \tabularnewline
+\hline 
+1 & 1 &  & \tabularnewline
+\hline 
+2 & 1 &  & \tabularnewline
+\hline 
+3 & 1 &  & \tabularnewline
+\hline 
+4 & 1 &  & \tabularnewline
+\hline 
+5 & 1 &  & \tabularnewline
+\hline 
+\end{tabular}
+
+Based on the division of sub-problems mentioned earlier, each cell
+in the table can be derived from computed cells.
+
+For example, at cell $(1,1)$, $S(1,[1])=S(1,[])\cup S(0,[1])$. There
+is no solution to $S(1,[])$ as you cannot make change with no coins,
+and there is 1 solution to $S(0,[1])$ as stored in cell $(0,1)$.
+Thus, the number of solution to $S(1,[1])$ is $1+0=1$. Put a $1$
+at cell $(1,1)$. The first colum can be computed following the same
+pattern.
+
+2-d array: example 3
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Amount & 1 & 2 & 5\tabularnewline
+\hline 
+\hline 
+0 & 1 & 1 & \tabularnewline
+\hline 
+1 & 1 & 1 & \tabularnewline
+\hline 
+2 & 1 &  & \tabularnewline
+\hline 
+3 & 1 &  & \tabularnewline
+\hline 
+4 & 1 &  & \tabularnewline
+\hline 
+5 & 1 &  & \tabularnewline
+\hline 
+\end{tabular}
+
+At cell $(1,2)$, $S(1,[1,2])=S(1,[1])$. But the number solutions
+to $S(1,[1])$ is already stored in cell $(1,1)$. Thus, the number
+of solutions just $1$. Put a $1$ at cell $(1,2)$.
+
+2-d array: example 4
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Amount & 1 & 2 & 5\tabularnewline
+\hline 
+\hline 
+0 & 1 & 1 & \tabularnewline
+\hline 
+1 & 1 & 1 & \tabularnewline
+\hline 
+2 & 1 & 2 & \tabularnewline
+\hline 
+3 & 1 &  & \tabularnewline
+\hline 
+4 & 1 &  & \tabularnewline
+\hline 
+5 & 1 &  & \tabularnewline
+\hline 
+\end{tabular}
+
+At cell $(2,2)$, $S(2,[1,2])=S(2,[1])\cup(S(0,[1,2])+[2])$. The
+number solutions to $S(2,[1])$ is already stored in cell $(2,1)$,
+and the number of solutions to $S(0,[1,2])$ is stored in cell $(0,2)$.
+Thus, the number of solutions $1+1=2$. Put a $2$ at cell $(2,2)$.
+
+2-d array: complete example
+
+The complete steps for computing the table column-by-column.
+
+Step 1: %
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Amount & 1 & 2 & 5\tabularnewline
+\hline 
+\hline 
+0 &  &  & \tabularnewline
+\hline 
+1 &  &  & \tabularnewline
+\hline 
+2 &  &  & \tabularnewline
+\hline 
+3 &  &  & \tabularnewline
+\hline 
+4 &  &  & \tabularnewline
+\hline 
+5 &  &  & \tabularnewline
+\hline 
+\end{tabular} Step 2: %
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Amount & 1 & 2 & 5\tabularnewline
+\hline 
+\hline 
+0 & 1 &  & \tabularnewline
+\hline 
+1 & 1 &  & \tabularnewline
+\hline 
+2 & 1 &  & \tabularnewline
+\hline 
+3 & 1 &  & \tabularnewline
+\hline 
+4 & 1 &  & \tabularnewline
+\hline 
+5 & 1 &  & \tabularnewline
+\hline 
+\end{tabular} 
+
+Step 3: %
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Amount & 1 & 2 & 5\tabularnewline
+\hline 
+\hline 
+0 & 1 & 1 & \tabularnewline
+\hline 
+1 & 1 & 1 & \tabularnewline
+\hline 
+2 & 1 & 2 & \tabularnewline
+\hline 
+3 & 1 & 2 & \tabularnewline
+\hline 
+4 & 1 & 3 & \tabularnewline
+\hline 
+5 & 1 & 3 & \tabularnewline
+\hline 
+\end{tabular} Step 4: %
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Amount & 1 & 2 & 5\tabularnewline
+\hline 
+\hline 
+0 & 1 & 1 & 1\tabularnewline
+\hline 
+1 & 1 & 1 & 1\tabularnewline
+\hline 
+2 & 1 & 2 & 2\tabularnewline
+\hline 
+3 & 1 & 2 & 2\tabularnewline
+\hline 
+4 & 1 & 3 & 3\tabularnewline
+\hline 
+5 & 1 & 3 & 4\tabularnewline
+\hline 
+\end{tabular} 
+
+2-d array: big o
+
+The bottom-right cell stores the number of solutions to the original
+problem.
+
+What is the running time? 
+
+What is the space (memory) requirement?
+
+2-d array: reconstruction
+
+\textbf{Reconstruct All Solutions}
+\begin{enumerate}
+\item Store back trace pointers in each cell of the table, and each pointer
+points to the cell from which the current cell obtains a non-zero
+value.
+\item Use depth-first search starting from the bottom-right cell to reconstruct
+the solutions
+\item Moving left: solution skips the denomination of the current column
+\item Moving up: solution uses one coin with the denomination of the current
+column
+\end{enumerate}
+2-d array: reconstruction efficiency
+
+What is the running time of reconstruction? How to make it more efficient?
+
+Hint: the reconstruction can be thought of as another dynamic programming
+problem.
+
+1-d array: intro
+
+\textbf{Improve Efficiency}
+
+Can we do better than using $O(mn)$ space?
+
+Yes! Because when we are working on the table one column at a time,
+only the previous column is required, and we do not need the values
+we have used. 
+
+So we can store only one column, and over-write each value as we compute
+the new one.
+
+1-d array 2: example
+
+Example: $n=5$ and $d=\{1,2,5\}$
+
+Step 1: %
+\begin{tabular}{|c|c|}
+\hline 
+Amount & \tabularnewline
+\hline 
+\hline 
+0 & 1\tabularnewline
+\hline 
+1 & \tabularnewline
+\hline 
+2 & \tabularnewline
+\hline 
+3 & \tabularnewline
+\hline 
+4 & \tabularnewline
+\hline 
+5 & \tabularnewline
+\hline 
+\end{tabular} Step 2: %
+\begin{tabular}{|c|c|}
+\hline 
+Amount & \tabularnewline
+\hline 
+\hline 
+0 & 1\tabularnewline
+\hline 
+1 & 1\tabularnewline
+\hline 
+2 & 1\tabularnewline
+\hline 
+3 & 1\tabularnewline
+\hline 
+4 & 1\tabularnewline
+\hline 
+5 & 1\tabularnewline
+\hline 
+\end{tabular} 
+
+Step 3: %
+\begin{tabular}{|c|c|}
+\hline 
+Amount & \tabularnewline
+\hline 
+\hline 
+0 & 1\tabularnewline
+\hline 
+1 & 1\tabularnewline
+\hline 
+2 & 2\tabularnewline
+\hline 
+3 & 2\tabularnewline
+\hline 
+4 & 3\tabularnewline
+\hline 
+5 & 3\tabularnewline
+\hline 
+\end{tabular} Step 4: %
+\begin{tabular}{|c|c|}
+\hline 
+Amount & \tabularnewline
+\hline 
+\hline 
+0 & 1\tabularnewline
+\hline 
+1 & 1\tabularnewline
+\hline 
+2 & 2\tabularnewline
+\hline 
+3 & 2\tabularnewline
+\hline 
+4 & 3\tabularnewline
+\hline 
+5 & 4\tabularnewline
+\hline 
+\end{tabular} 
+
+1-d array: thinking
+
+Can we store only one row? (No, why?)
+
+How to modify the new algorithm to allow reconstruction of optimal
+solutions?
+\end{document}

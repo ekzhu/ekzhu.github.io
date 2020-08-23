@@ -1,0 +1,457 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass slides
+\begin_preamble
+% Uncomment to print out only slides and overlays
+%
+%\onlyslides{\slides}
+
+% Uncomment to print out only notes
+%
+%\onlynotes{\notes}
+\usepackage{algorithm,algpseudocode}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics dvips
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 0
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation landscape
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 1
+\tocdepth 1
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Slide
+Title
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+CSC373 Tutorial 2, Summer 2015
+\end_layout
+
+\begin_layout Standard
+TA: Eric Zhu
+\end_layout
+
+\begin_layout Standard
+Problems are based on tutorial exercises from previous offerings of the
+ course by Francois Pitt (Fall 2014) and Milad Eftekhar (Summar 2013).
+\end_layout
+
+\begin_layout Slide
+Intro
+\end_layout
+
+\begin_layout Standard
+Brief review of Minimum Spanning Tree (MST):
+\end_layout
+
+\begin_layout Enumerate
+It is a 
+\begin_inset Quotes eld
+\end_inset
+
+spanning tree
+\begin_inset Quotes erd
+\end_inset
+
+ - acyclic connected subset of edges
+\end_layout
+
+\begin_layout Enumerate
+It has the minimum sum of edge weights.
+\end_layout
+
+\begin_layout Slide
+Prim and Kruskal
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Prim's Algorithm:
+\end_layout
+
+\begin_layout Itemize
+Start with some vertex 
+\begin_inset Formula $r\in V$
+\end_inset
+
+ and at each step, add smallest-weight edge that connects a new vertex to
+ the existing partial tree.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Kruskal's Algorithm:
+\end_layout
+
+\begin_layout Itemize
+Repeatedly put in smallest-weight edge remaining, as long as it doesn't
+ create a cycle
+\end_layout
+
+\begin_layout Itemize
+Proof?
+\end_layout
+
+\begin_layout Slide
+Problem 1
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Problem 1
+\end_layout
+
+\begin_layout Standard
+Prove or disprove: If 
+\begin_inset Formula $e$
+\end_inset
+
+ is a minimum-weight edge in connected graph G (where not all edge weights
+ are necessarily distinct), then every minimum spanning tree of 
+\begin_inset Formula $G$
+\end_inset
+
+ contains 
+\begin_inset Formula $e$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+What if the edge weight of 
+\begin_inset Formula $e$
+\end_inset
+
+ is unique (but 
+\begin_inset Formula $e$
+\end_inset
+
+ is still has the smallest weight)?
+\end_layout
+
+\begin_layout Slide
+Problem 2
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Problem 2
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Think:
+\series default
+ what is the most general proerty of an edge e, in the most general kind
+ of input graph 
+\begin_inset Formula $G$
+\end_inset
+
+, for which you can gaurantee that 
+\begin_inset Formula $e$
+\end_inset
+
+ either belongs (or does not belongs) to every MST of 
+\begin_inset Formula $G$
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Slide
+Problem 3
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Problem 3
+\end_layout
+
+\begin_layout Standard
+If graph 
+\begin_inset Formula $G$
+\end_inset
+
+ is connected anf contains more than 
+\begin_inset Formula $n-1$
+\end_inset
+
+ edges (where 
+\begin_inset Formula $n=V$
+\end_inset
+
+ as usual), and if there is a unique edge 
+\begin_inset Formula $e$
+\end_inset
+
+ with maximum cost, then is 
+\begin_inset Formula $e$
+\end_inset
+
+ guaranteed 
+\series bold
+not
+\series default
+ to be in any MST of 
+\begin_inset Formula $G$
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Standard
+If not, what other conditions can you put on 
+\begin_inset Formula $G$
+\end_inset
+
+ to guarantee that 
+\begin_inset Formula $e$
+\end_inset
+
+ will be in no MST of 
+\begin_inset Formula $G$
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Slide
+Problem 4
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Problem 4
+\end_layout
+
+\begin_layout Standard
+Prove or disprove: for every graph 
+\begin_inset Formula $G$
+\end_inset
+
+ whose edge weights are all distinct, every MST of 
+\begin_inset Formula $G$
+\end_inset
+
+ contains the two edges 
+\begin_inset Formula $e_{1}$
+\end_inset
+
+, 
+\begin_inset Formula $e_{2}$
+\end_inset
+
+ with the two smallest weights.
+\end_layout
+
+\begin_layout Slide
+Problem 5
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Problem 5
+\end_layout
+
+\begin_layout Standard
+Consider the 
+\begin_inset Quotes eld
+\end_inset
+
+reverse-delete
+\begin_inset Quotes erd
+\end_inset
+
+ algorithm to find MST:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\series bold
+\size normal
+Reverse-delete
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{algorithmic}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+State{Sort edges $E$ so $c(e_1) 
+\backslash
+ge ...
+ 
+\backslash
+ge c(e_m)$}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+State{$T = E$}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+For{$j = 1...m$}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+If{$T - 
+\backslash
+{ e_j 
+\backslash
+}$ is connected}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+State{$T = T - 
+\backslash
+{e_j
+\backslash
+}$}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+EndIf
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+EndFor
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+Return{$T$}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{algorithmic}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Prove that this algorithm always finds a MST.
+\end_layout
+
+\end_body
+\end_document

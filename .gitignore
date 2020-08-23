@@ -1,0 +1,7 @@
+_site
+.DS_Store
+*.swp
+*.aux
+*.log
+*~
+.jekyll-cache
