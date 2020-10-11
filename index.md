@@ -22,8 +22,6 @@ I continue to contribute exploratory work in data science and data management.
 Feel free to send me an email about my 
 [open source projects](https://github.com/ekzhu).
 
-[[My Microsoft Page](https://www.microsoft.com/en-us/research/people/ekzhu/)]
 [[Github](https://github.com/ekzhu)]
-[[Publications](https://www.semanticscholar.org/author/Erkang-Zhu/3055912)]
-[[LinkedIn](https://www.linkedin.com/in/ekzhu)]
-[[Personal Email](mailto:ekzhu@cs.toronto.edu)]
+[[Papers](https://www.semanticscholar.org/author/Erkang-Zhu/3055912)]
+[[Email](mailto:ekzhu@cs.toronto.edu)]
